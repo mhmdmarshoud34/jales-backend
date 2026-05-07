@@ -2,14 +2,20 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 
-import authRoutes from "./routes/authRoutes";
-import userRoutes from "./routes/userRoutes";
-import thresholdsRoutes from "./routes/thresholdsRoutes";
-import { supabase } from "./supabase";
+import authRoutes from "./src/routes/authRoutes";
+import userRoutes from "./src/routes/userRoutes";
+import thresholdsRoutes from "./src/routes/thresholdsRoutes";
+import { supabase } from "./src/supabase";
 
 const app = express();
 
-app.use(cors({ origin: true, credentials: true }));
+// Dev / LAN + Expo: allow any Origin while still supporting credentials (echoes request origin).
+app.use(
+  cors({
+    origin: (_origin, cb) => cb(null, true),
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.get("/", (_req, res) => res.send("JALES backend is running ✅"));
@@ -34,7 +40,10 @@ async function checkDatabaseConnection() {
 }
 
 const port = Number(process.env.PORT || 4000);
+const host = process.env.HOST || "0.0.0.0";
 
 checkDatabaseConnection().then(() => {
-  app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+  app.listen(port, host, () => {
+    console.log(`Server listening on http://${host}:${port} (reachable on your LAN at your PC IP)`);
+  });
 });
