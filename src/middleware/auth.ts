@@ -14,6 +14,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
     req.user = {
       id: String(payload.sub),
+      userId: String(payload.sub),
       email: payload.email ? String(payload.email) : null,
     };
 

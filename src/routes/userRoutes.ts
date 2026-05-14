@@ -7,7 +7,6 @@ type SafeUser = {
   name: string;
   email: string;
   age: number | null;
-  gender: string | null;
   height_cm: number | null;
   weight_kg: number | null;
   created_at: string;
@@ -24,8 +23,8 @@ router.get("/me", requireAuth, async (req, res) => {
     const userId = req.user!.id;
 
     const { data: user, error } = await supabase
-      .from("Users")
-      .select("id,name,email,age,gender,height_cm,weight_kg,created_at")
+      .from("users")
+      .select("id,name,email,age,height_cm,weight_kg,created_at")
       .eq("id", userId)
       .single<SafeUser>();
 
